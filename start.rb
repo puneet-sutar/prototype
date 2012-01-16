@@ -14,7 +14,6 @@ def ready_obj
    fobj=File.open("obj.txt", "r")
    object=fobj.read.split " "
    i=0
-   puts object.length
    while i<object.length
      if object[i]== "#NAME"
       if i!=0
@@ -28,22 +27,24 @@ def ready_obj
        temp.insert(object[i+1],object[i+2])
        i=i+2
      end
+     if(object[i])=="#KEY"
+       i=i+1
+       temp.set_primary_key(object[i])
+     end
+     if(object[i])=="#BALANCE"
+       i=i+1
+       temp.set_balance(object[i])
+     end  
      i=i+1
-       
-   end
+  end
    $obj.push(temp)
    i=0 
-  while i<$obj.length  
-   $obj[i].display_object()
-   i=i+1
-  end
-  fobj.close
-     
+fobj.close
 end
 
 def ready_op
   $op =[]
- temp=Operations.new
+  temp=Operations.new
    fobj=File.open("op.txt", "r")
    object=fobj.read.split " "
    i=0
@@ -51,7 +52,6 @@ def ready_op
    name=""
    type=""
    while i<object.length
-     ;puts "#####{object[i]}"
      input=[]
      output=[]
      if object[i]== "#ID"
@@ -60,23 +60,19 @@ def ready_op
       end
       temp=Operations.new
       i=i+1
-      id=object[i];puts "#####{object[i]}"
+      id=object[i]
       i=i+2
-      name=object[i];puts "#####{object[i]}"
+      name=object[i]
       i=i+2
-      type=object[i];puts "#####{object[i]}"
+      type=object[i]
       i=i+1
      end
      while (object[i] == "#INPUT") 
-       input.push(object[i+1]);puts "#####{object[i+1]}"
-       #puts "***********************************"
-       #puts object[i+1]
+       input.push(object[i+1])
        i=i+2
      end
      while (object[i] == "#OUTPUT") 
-       #puts "***********************************"
-       output.push(object[i+1]);puts "#####{object[i+1]}"
-       #puts object[i+1]
+       output.push(object[i+1])
        i=i+2
      end
      temp.create(id,name,type,input,output)  
@@ -146,15 +142,13 @@ def testing()
       end
       #puts $map
       $op.each do |op|
-        puts "!!!!!!!!!!!"
-        puts op.get_id
-        puts $op_id
-        puts "!!!!!!!!!!!"
         if op.get_id == $op_id
           $op_name=op.get_name
           $op_type=op.get_type
           $op_input=op.get_input
           $op_output=op.get_output
+          $obj_key=$obj[0].get_primary_key
+          $obj_balance=$obj[0].get_balance
           break
         end
         
@@ -162,7 +156,7 @@ def testing()
       begin
         dbh = DBI.connect("DBI:Mysql:prototype:localhost","root", "123")
         if $op_type == "DEBIT"
-          sth = dbh.prepare("update account set #{$map['bal']} = #{$map['bal']} - #{$input['amt'][0].to_i}  WHERE  #{$map['id']} = \'#{$input['id'][0]}\'") ###EDITING left, statement incomplete
+          sth = dbh.prepare("update account set #{$map[$obj_balance]} = #{$map[$obj_balance]} - #{$input['amt'][0].to_i}  WHERE  #{$map[$obj_key]} = \'#{$input[$obj_key][0]}\'") ###EDITING left, statement incomplete
           sth.execute()
           dbh.commit
           response=File.open("response.xml","w")
@@ -170,7 +164,7 @@ def testing()
           response.puts"<op_id>#{$op_id}</op_id>"
           response.puts"<output>"
           $op_output.each do |i|
-            sth = dbh.prepare("select #{$map[i]} from account where #{$map['id']} = \'#{$input['id'][0]}\'")
+            sth = dbh.prepare("select #{$map[i]} from account where #{$map[$obj_key]} = \'#{$input[$obj_key][0]}\'")
             sth.execute()
             out=""
             sth.fetch do |row|
@@ -184,7 +178,7 @@ def testing()
         response.close
         end
        if $op_type == "CREDIT"
-          sth = dbh.prepare("update account set #{$map['bal']} = #{$map['bal']} + #{$input['amt'][0].to_i}  WHERE  #{$map['id']} = \'#{$input['id'][0]}\'") ###EDITING left, statement incomplete
+          sth = dbh.prepare("update account set #{$map[$obj_balance]} = #{$map[$obj_balance]} + #{$input['amt'][0].to_i}  WHERE  #{$map[$obj_key]} = \'#{$input[$obj_key][0]}\'") ###EDITING left, statement incomplete
           sth.execute()
           dbh.commit
           response=File.open("response.xml","w")
@@ -192,7 +186,7 @@ def testing()
           response.puts"<op_id>#{$op_id}</op_id>"
           response.puts"<output>"
           $op_output.each do |i|
-            sth = dbh.prepare("select #{$map[i]} from account where #{$map['id']} = \'#{$input['id'][0]}\'")
+            sth = dbh.prepare("select #{$map[i]} from account where #{$map[$obj_key]} = \'#{$input[$obj_key][0]}\'")
             sth.execute()
             out=""
             sth.fetch do |row|
@@ -213,19 +207,21 @@ def testing()
      # disconnect from server
         dbh.disconnect if dbh
       end      
-    
 end
 
 def object
   fobj=File.open("obj.txt","w")
   puts "\nenter object name :"
   while (s1=gets.chomp)!="#"
-  
   fobj.puts "#NAME  #{s1}\n"
   puts "\n ENTER attributes type pair as: attr_name type  "
   while (s=gets.chomp)!="#" 
       fobj.puts "#ATTR  #{s}\n"
   end
+  puts "\nenter primary key:"
+  fobj.puts"#KEY #{gets.chomp}"
+  puts "\nenter balance key:"
+  fobj.puts"#BALANCE #{gets.chomp}"
   puts "\nenter object name :"
   end
   fobj.close
@@ -255,8 +251,8 @@ def operation
 end
 
 op=nil
-while op!="4"
-puts "1.Create Objects\n2.Create Operations\n3.testing\n4.to exit\n5.MappingEnter your choice"
+while op!="5"
+puts "1.Create Objects\n2.Create Operations\n3.mapping\n4.testing\n5.to exit\nEnter your choice"
 op=gets
 #puts "#{op}"
 op=op.chomp;
@@ -267,15 +263,13 @@ when 2
   operation()
 when 3
   ready_obj()
+  mapping();
+when 4
+  ready_obj()
   ready_op()
   testing();
-when 4 
-  ready_op()
-  puts"Exiting program"
-when 5
-  ready_obj()
-  mapping();
-end
+when 5 
+  puts "Thank tou for using this application"
 
-  
+end
 end

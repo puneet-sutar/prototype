@@ -2,3 +2,5 @@
 #ATTR  id string
 #ATTR  name string
 #ATTR  bal float
+#KEY id
+#BALANCE bal
