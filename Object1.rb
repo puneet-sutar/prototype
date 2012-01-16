@@ -9,6 +9,12 @@ class Object1
   def insert(attr_name,attr_type)
     @attributes["#{attr_name}"]=attr_type
   end
+  def get_name
+    @name
+  end
+  def get_attributes
+    @attributes
+  end
   def display_object
     
     puts "Name=#{@name}\n";

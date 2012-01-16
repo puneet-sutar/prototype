@@ -10,7 +10,21 @@ class Operations
     @type=type
     @input=input
     @output=output
-    
+  end
+  def get_id
+    @id
+  end
+  def get_name
+    @name
+  end
+  def get_type
+    @type
+  end
+  def get_input
+    @input
+  end
+  def get_output
+    @output
   end
   def display
     puts "id=#{@id}"

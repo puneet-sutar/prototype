@@ -1,4 +1,4 @@
-file = File.open("input", "r")
-s= file.read
-a=s.split(" ")
-puts a
+require "modules.rb"
+include Parse
+parser('request.xml')
+puts $input

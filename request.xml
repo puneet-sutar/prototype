@@ -1,0 +1,7 @@
+<request>
+	<op_id>1</op_id>
+	<input>
+		<id>id1</id>
+		<amt>1000</amt>
+	</input>
+</request>
