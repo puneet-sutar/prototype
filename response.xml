@@ -1,7 +1,8 @@
 <response>
-<op_id>2</op_id>
+<op_id>1</op_id>
 <output>
-<bal>5200</bal>
+<balance>5200</balance>
 <name>piyush</name>
+<mob>9876567490</mob>
 </output>
 </response>

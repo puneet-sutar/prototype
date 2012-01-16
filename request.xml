@@ -1,4 +1,5 @@
 <request>
+	<trans_id>1</trans_id>
 	<op_id>1</op_id>
 	<input>
 		<id>id1</id>

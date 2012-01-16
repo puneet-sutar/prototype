@@ -1,0 +1,19 @@
+TRANSACTION ID = 2
+OPERATION ID = 2
+INPUTS : 
+  id = id1
+  amt = 1000
+OUTPUTS : 
+  bal = 6200
+  name = piyush
+ush
+  mob = 9876567490
+TRANSACTION ID = 1
+OPERATION ID = 1
+INPUTS : 
+  id = id1
+  amt = 1000
+OUTPUTS : 
+  balance = 5200
+  name = piyush
+  mob = 9876567490

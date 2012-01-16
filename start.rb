@@ -141,6 +141,7 @@ def testing()
         $map["#{a[0]}"]=a[1]
       end
       #puts $map
+      
       $op.each do |op|
         if op.get_id == $op_id
           $op_name=op.get_name
@@ -151,8 +152,16 @@ def testing()
           $obj_balance=$obj[0].get_balance
           break
         end
-        
+       
       end
+      log=File.open("log","a") ###############     LOG FILE for transaction logs
+      log.puts "TRANSACTION ID = #{$trans_id}"
+      log.puts "OPERATION ID = #{$op_id}"
+      log.puts "INPUTS : "
+      $input.each do |i,j|
+        log.puts "  #{i} = #{j}"
+      end  
+      log.puts "OUTPUTS : "
       begin
         dbh = DBI.connect("DBI:Mysql:prototype:localhost","root", "123")
         if $op_type == "DEBIT"
@@ -169,7 +178,10 @@ def testing()
             out=""
             sth.fetch do |row|
               out=row[0]
+              log.puts "  #{i} = #{row[0]}"
             end
+            
+      
             response.puts"<#{i}>#{out}</#{i}>"
           end
           response.puts"</output>"
@@ -191,6 +203,7 @@ def testing()
             out=""
             sth.fetch do |row|
               out=row[0]
+             log.puts "  #{i} = #{row[0]}" 
             end
             response.puts"<#{i}>#{out}</#{i}>"
           end
@@ -206,6 +219,7 @@ def testing()
       ensure
      # disconnect from server
         dbh.disconnect if dbh
+        log.close
       end      
 end
 

@@ -1,6 +1,8 @@
 #NAME  acc
 #ATTR  id string
 #ATTR  name string
-#ATTR  bal float
+#ATTR  balance float
+#ATTR  mob string
+#ATTR  dateOfBirth date
 #KEY id
-#BALANCE bal
+#BALANCE balance

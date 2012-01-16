@@ -1,7 +1,8 @@
 <request>
+	<trans_id>2</trans_id>
 	<op_id>2</op_id>
 	<input>
-		<id>id1</id>
+		<id>id2</id>
 		<amt>1000</amt>
 	</input>
 </request>

@@ -3,11 +3,6 @@
 #TYPE  DEBIT
 #INPUT  id
 #INPUT  amt
-#OUTPUT  bal
-#ID  2
-#NAME  CD
-#TYPE  CREDIT
-#INPUT  id
-#INPUT  amt
-#OUTPUT  bal
+#OUTPUT  balance
 #OUTPUT  name
+#OUTPUT  mob
